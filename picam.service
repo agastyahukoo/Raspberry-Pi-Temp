@@ -1,0 +1,15 @@
+[Unit]
+Description=Drone camera stream over Tailscale
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+# CHANGE both of these to your username and the path to stream.sh
+User=pi
+ExecStart=/home/pi/drone-stream/stream.sh
+
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
