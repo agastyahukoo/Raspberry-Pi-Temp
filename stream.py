@@ -2,10 +2,43 @@
 """
 stream.py - Serve the Pi camera as video any browser can watch.
 
-Run on the Pi:      python3 stream.py
-Watch on laptop:    http://<pi-tailscale-ip>:8000
+Nothing needs to be installed on the Windows side.
 
-Nothing to install on Windows.
+
+SETUP - run once on the Pi
+--------------------------
+
+    # Tailscale (opens a sign-in URL - use the same account as the laptop)
+    curl -fsSL https://tailscale.com/install.sh | sh
+    sudo tailscale up
+
+    # Camera check - look for a line containing "imx708"
+    rpicam-hello --list-cameras
+
+    # Packages
+    sudo apt update
+    sudo apt install -y python3-picamera2 python3-venv
+
+    # Virtual environment
+    cd ~/drone-stream
+    python3 -m venv --system-site-packages .venv
+    source .venv/bin/activate
+
+    --system-site-packages is REQUIRED. picamera2 relies on the libcamera
+    bindings that ship with Raspberry Pi OS and are not available on PyPI,
+    so a plain isolated venv will not be able to see the camera at all.
+
+
+RUN
+---
+
+    source .venv/bin/activate      # needed in each new terminal
+    python stream.py
+
+    Then open the URL it prints in any browser on the laptop:
+        http://<pi-tailscale-ip>:8000
+
+    Ctrl-C to stop.
 """
 
 import io
